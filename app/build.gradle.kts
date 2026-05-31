@@ -1,3 +1,12 @@
+import java.util.Properties
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.plugin.compose")
@@ -14,18 +23,19 @@ android {
         applicationId = "com.example.moodit"
 
         minSdk = 26
-        targetSdk = 34
-
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
+        val groqApiKey =
+            localProperties.getProperty("GROQ_API_KEY", "")
+
         buildConfigField(
             "String",
-            "GEMINI_API_KEY",
-            "\"${project.properties["GEMINI_API_KEY"]}\""
+            "GROQ_API_KEY",
+            "\"$groqApiKey\""
         )
     }
-
     buildFeatures {
         compose = true
         buildConfig = true
@@ -56,5 +66,8 @@ dependencies {
 
     implementation("com.google.android.gms:play-services-location:21.3.0")
 
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
+    implementation("org.json:json:20240303")
 
 }

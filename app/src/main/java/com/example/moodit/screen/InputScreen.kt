@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavController
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -329,22 +330,23 @@ fun InputScreen(navController: NavController) {
 
                         Column(
                             modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.Center,
+                            verticalArrangement = Arrangement.spacedBy(10.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+
+                            Spacer(modifier = Modifier.height(6.dp))
 
                             Text(
                                 text = emoji,
                                 fontSize = 28.sp
                             )
 
-                            Spacer(modifier = Modifier.height(10.dp))
-
                             Text(
                                 text = reason,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.SemiBold,
-                                lineHeight = 20.sp
+                                lineHeight = 20.sp,
+                                textAlign = TextAlign.Center
                             )
                         }
                     }
@@ -387,10 +389,15 @@ fun InputScreen(navController: NavController) {
                 ),
 
                 trailingIcon = {
-                    Text(
-                        text = "${memo.length}/100",
-                        color = Color.Gray
-                    )
+                    Box(
+                        modifier = Modifier.padding(end = 6.dp)
+                    ) {
+                        Text(
+                            text = "${memo.length}/100",
+                            color = Color.Gray,
+                            fontSize = 13.sp
+                        )
+                    }
                 }
             )
 

@@ -19,9 +19,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.moodit.BuildConfig
-import com.google.ai.client.generativeai.GenerativeModel
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONArray
+import org.json.JSONObject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Composable
 fun ResultScreen(
@@ -57,7 +64,7 @@ fun ResultScreen(
             )
         }
 
-    // Gemini AI 결과
+    // AI 결과
     var aiReport by remember {
         mutableStateOf("AI가 소비 패턴을 분석중이에요...")
     }
@@ -75,7 +82,7 @@ fun ResultScreen(
             resultType = "자기보상형 소비"
 
             description =
-                "만족감과 동기부여를 중요하게 생각하는 소비 성향이에요."
+                "만족감과 동기부여를 중요하게 생각하는 \n 소비 성향이에요."
 
             keywords = listOf(
                 "#자기보상",
@@ -135,38 +142,116 @@ fun ResultScreen(
         }
     }
 
-    // Gemini API 호출
     LaunchedEffect(Unit) {
 
         try {
 
-            val generativeModel = GenerativeModel(
-                modelName = "gemini-1.5-flash",
-                apiKey = BuildConfig.GEMINI_API_KEY
-            )
-
             val prompt = """
-                사용자의 소비 패턴을 분석해주세요.
+            당신은 소비 심리 분석 AI입니다.
 
-                카테고리: $decodedCategory
-                소비 금액: $decodedAmount
-                소비 이유: $decodedReason
-                메모: $decodedMemo
+            사용자 정보
 
-                너무 길지 않게 5~6줄 정도로 자연스럽게 분석해주세요.
+            카테고리: $decodedCategory
+            소비 금액: $decodedAmount
+            소비 이유: $decodedReason
+            메모: $decodedMemo
+
+            반드시 한국어로만 답변하세요.
+
+            관광, 음식, 여행 등 입력되지 않은 내용을 절대 추측하지 마세요.
+
+            다음 형식을 정확히 지키세요.
+
+            [소비 유형]
+            20자 이내
+
+            [AI 분석]
+            2문장 이내
+
+            [한 줄 조언]
+            1문장
+
+            예시)
+
+            [소비 유형]
+            자기보상형 소비자
+
+            [AI 분석]
+            스트레스를 해소하기 위한 감정 소비 경향이 보입니다.
+            비교적 큰 금액을 사용해 만족감을 얻으려는 모습이 나타납니다.
+
+            [한 줄 조언]
+            기분 소비 전에 예산을 먼저 정해보세요.
             """.trimIndent()
 
-            val response = generativeModel.generateContent(
-                prompt
-            )
+            val client = OkHttpClient()
+
+            val json = JSONObject().apply {
+
+                put(
+                    "model",
+                    "llama-3.3-70b-versatile"
+                )
+
+                put(
+                    "messages",
+                    JSONArray().put(
+                        JSONObject().apply {
+                            put("role", "user")
+                            put("content", prompt)
+                        }
+                    )
+                )
+
+                put("temperature", 0.7)
+            }
+
+            val requestBody =
+                json.toString().toRequestBody(
+                    "application/json".toMediaType()
+                )
+
+            val request =
+                Request.Builder()
+                    .url("https://api.groq.com/openai/v1/chat/completions")
+                    .addHeader(
+                        "Authorization",
+                        "Bearer ${BuildConfig.GROQ_API_KEY}"
+                    )
+                    .addHeader(
+                        "Content-Type",
+                        "application/json"
+                    )
+                    .post(requestBody)
+                    .build()
+
+            val body = withContext(Dispatchers.IO) {
+
+                val response =
+                    client.newCall(request).execute()
+
+                println("HTTP CODE = ${response.code}")
+
+                response.body?.string()
+            }
+
+            val result =
+                JSONObject(body!!)
 
             aiReport =
-                response.text ?: "분석 결과를 불러오지 못했어요."
+                result
+                    .getJSONArray("choices")
+                    .getJSONObject(0)
+                    .getJSONObject("message")
+                    .getString("content")
 
         } catch (e: Exception) {
 
             aiReport =
-                e.message ?: "AI 분석 오류"
+                "오류 발생\n${e.javaClass.simpleName}"
+
+            println("ERROR TYPE = ${e.javaClass.simpleName}")
+            println("ERROR MESSAGE = ${e.message}")
 
             e.printStackTrace()
         }
