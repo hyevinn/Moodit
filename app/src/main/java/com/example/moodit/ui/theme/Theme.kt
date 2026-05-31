@@ -10,34 +10,45 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
+
+object SharedLocationHolder {
+    var location: String = "위치 정보를 불러올 수 없습니다."
+}
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = DarkPrimary,
+    onPrimary = Color.White,
+    primaryContainer = DarkPrimaryContainer,
+    onPrimaryContainer = Color.White,
+    background = DarkBg,
+    onBackground = Color(0xFFF2EEF7),
+    surface = DarkSurface,
+    onSurface = Color(0xFFF2EEF7),
+    outline = DarkOutline,
+    surfaceVariant = Color(0xFF2C2C35),
+    onSurfaceVariant = Color(0xFF9E9E9E)
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
+    primary = LightPrimary,
     onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    primaryContainer = LightPrimaryContainer,
+    onPrimaryContainer = Color.Black,
+    background = LightBg,
+    onBackground = Color.Black,
+    surface = LightSurface,
+    onSurface = Color.Black,
+    outline = LightOutline,
+    surfaceVariant = Color(0xFFF1E6FF),
+    onSurfaceVariant = Color.Gray
 )
 
 @Composable
 fun MooditTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    // Dynamic color is disabled by default to enforce our custom design system colors
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

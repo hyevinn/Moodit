@@ -18,6 +18,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.compose.foundation.isSystemInDarkTheme
+import com.example.moodit.ui.theme.MooditTheme
+import com.example.moodit.ui.theme.SharedLocationHolder
 import com.example.moodit.BuildConfig
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
@@ -38,6 +41,9 @@ fun ResultScreen(
     reason: String,
     memo: String
 ) {
+    MooditTheme {
+        val isDark = isSystemInDarkTheme()
+        val locationStr = SharedLocationHolder.location
 
     val decodedCategory = URLDecoder.decode(
         category,
@@ -90,7 +96,7 @@ fun ResultScreen(
                 "#만족소비"
             )
 
-            cardColor = Color(0xFFF5EEFF)
+            cardColor = if (isDark) Color(0xFF7A68A1) else Color(0xFFF5EEFF)
         }
 
         "스트레스 해소" -> {
@@ -106,7 +112,7 @@ fun ResultScreen(
                 "#기분전환"
             )
 
-            cardColor = Color(0xFFF8EEFF)
+            cardColor = if (isDark) Color(0xFF8A70B3) else Color(0xFFF8EEFF)
         }
 
         "유행 영향" -> {
@@ -122,7 +128,7 @@ fun ResultScreen(
                 "#추천템"
             )
 
-            cardColor = Color(0xFFFFF2F7)
+            cardColor = if (isDark) Color(0xFFB26A8A) else Color(0xFFFFF2F7)
         }
 
         else -> {
@@ -138,7 +144,7 @@ fun ResultScreen(
                 "#효율중심"
             )
 
-            cardColor = Color(0xFFEFFAF3)
+            cardColor = if (isDark) Color(0xFF6FA27A) else Color(0xFFEFFAF3)
         }
     }
 
@@ -260,7 +266,7 @@ fun ResultScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF7F4FA))
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
             .padding(20.dp)
     ) {
@@ -281,7 +287,8 @@ fun ResultScreen(
 
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = null
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             }
 
@@ -293,7 +300,8 @@ fun ResultScreen(
                 Text(
                     text = "소비 분석 결과",
                     fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
 
@@ -310,7 +318,7 @@ fun ResultScreen(
 
             border = BorderStroke(
                 1.dp,
-                Color(0xFFC8AFFF)
+                MaterialTheme.colorScheme.outline
             ),
 
             colors = CardDefaults.cardColors(
@@ -329,7 +337,7 @@ fun ResultScreen(
                 Text(
                     text = "당신의 소비 유형은",
                     fontSize = 15.sp,
-                    color = Color.Gray,
+                    color = if (isDark) Color.LightGray else Color.Gray,
                     textAlign = TextAlign.Center
                 )
 
@@ -339,7 +347,8 @@ fun ResultScreen(
                     text = resultType,
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    color = if (isDark) Color.White else Color.Black
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -348,7 +357,7 @@ fun ResultScreen(
                     text = description,
                     fontSize = 16.sp,
                     lineHeight = 24.sp,
-                    color = Color.DarkGray,
+                    color = if (isDark) Color(0xFFE0E0E0) else Color.DarkGray,
                     textAlign = TextAlign.Center
                 )
             }
@@ -364,11 +373,11 @@ fun ResultScreen(
 
             border = BorderStroke(
                 1.dp,
-                Color(0xFFC8AFFF)
+                MaterialTheme.colorScheme.outline
             ),
 
             colors = CardDefaults.cardColors(
-                containerColor = Color.White
+                containerColor = MaterialTheme.colorScheme.surface
             )
         ) {
 
@@ -384,7 +393,8 @@ fun ResultScreen(
                     text = "AI 소비 분석 리포트",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(modifier = Modifier.height(18.dp))
@@ -393,7 +403,7 @@ fun ResultScreen(
                     text = aiReport,
                     fontSize = 15.sp,
                     lineHeight = 25.sp,
-                    color = Color.DarkGray,
+                    color = if (isDark) Color.LightGray else Color.DarkGray,
                     textAlign = TextAlign.Center
                 )
             }
@@ -409,11 +419,11 @@ fun ResultScreen(
 
             border = BorderStroke(
                 1.dp,
-                Color(0xFFC8AFFF)
+                MaterialTheme.colorScheme.outline
             ),
 
             colors = CardDefaults.cardColors(
-                containerColor = Color.White
+                containerColor = MaterialTheme.colorScheme.surface
             )
         ) {
 
@@ -429,7 +439,8 @@ fun ResultScreen(
                     text = "소비 성향 키워드",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -443,7 +454,7 @@ fun ResultScreen(
                         Box(
                             modifier = Modifier
                                 .background(
-                                    Color(0xFFF1E6FF),
+                                    if (isDark) Color(0xFF3B2A56) else Color(0xFFF1E6FF),
                                     RoundedCornerShape(14.dp)
                                 )
                                 .padding(
@@ -454,7 +465,7 @@ fun ResultScreen(
 
                             Text(
                                 text = keyword,
-                                color = Color(0xFF7E57C2),
+                                color = if (isDark) Color(0xFFC8AFFF) else Color(0xFF7E57C2),
                                 fontWeight = FontWeight.SemiBold
                             )
                         }
@@ -473,11 +484,11 @@ fun ResultScreen(
 
             border = BorderStroke(
                 1.dp,
-                Color(0xFFC8AFFF)
+                MaterialTheme.colorScheme.outline
             ),
 
             colors = CardDefaults.cardColors(
-                containerColor = Color.White
+                containerColor = MaterialTheme.colorScheme.surface
             )
         ) {
 
@@ -492,28 +503,40 @@ fun ResultScreen(
                 Text(
                     text = "입력한 소비 정보",
                     fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(modifier = Modifier.height(18.dp))
 
                 Text(
                     text = "카테고리 : $decodedCategory",
-                    fontSize = 15.sp
+                    fontSize = 15.sp,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Text(
                     text = "소비 금액 : $decodedAmount",
-                    fontSize = 15.sp
+                    fontSize = 15.sp,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Text(
                     text = "소비 이유 : $decodedReason",
-                    fontSize = 15.sp
+                    fontSize = 15.sp,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Text(
+                    text = "소비 위치 : $locationStr",
+                    fontSize = 15.sp,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
         }
@@ -530,11 +553,11 @@ fun ResultScreen(
 
                 border = BorderStroke(
                     1.dp,
-                    Color(0xFFC8AFFF)
+                    MaterialTheme.colorScheme.outline
                 ),
 
                 colors = CardDefaults.cardColors(
-                    containerColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.surface
                 )
             ) {
 
@@ -549,7 +572,8 @@ fun ResultScreen(
                     Text(
                         text = "오늘의 소비 한마디",
                         fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -558,7 +582,7 @@ fun ResultScreen(
                         text = decodedMemo,
                         fontSize = 15.sp,
                         lineHeight = 24.sp,
-                        color = Color.DarkGray,
+                        color = if (isDark) Color.LightGray else Color.DarkGray,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -567,4 +591,5 @@ fun ResultScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
     }
+}
 }

@@ -26,7 +26,7 @@ fun MainScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF7F4FA))
+            .background(MaterialTheme.colorScheme.background)
     ) {
 
         // 스크롤 영역
@@ -56,7 +56,7 @@ fun MainScreen(navController: NavController) {
                 text = "안녕하세요 👋",
                 fontSize = 25.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -103,7 +103,7 @@ fun MainScreen(navController: NavController) {
 
                         Text(
                             text = "오늘의 한 줄",
-                            color = Color(0xFF8F7AAE),
+                            color = Color.Black,
                             fontSize = 15.sp
                         )
 
@@ -148,7 +148,7 @@ fun MainScreen(navController: NavController) {
                 text = "최근 분석 결과",
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             Spacer(modifier = Modifier.height(14.dp))

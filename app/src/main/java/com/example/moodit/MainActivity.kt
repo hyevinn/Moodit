@@ -11,6 +11,7 @@ import com.example.moodit.screen.InputScreen
 import com.example.moodit.screen.LoadingScreen
 import com.example.moodit.screen.MainScreen
 import com.example.moodit.screen.ResultScreen
+import com.example.moodit.ui.theme.MooditTheme
 
 class MainActivity : ComponentActivity() {
 
@@ -20,12 +21,13 @@ class MainActivity : ComponentActivity() {
 
         setContent {
 
-            val navController = rememberNavController()
+            MooditTheme {
+                val navController = rememberNavController()
 
-            NavHost(
-                navController = navController,
-                startDestination = "main"
-            ) {
+                NavHost(
+                    navController = navController,
+                    startDestination = "main"
+                ) {
 
                 // 메인 화면
                 composable("main") {
@@ -86,4 +88,5 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+}
 }

@@ -38,10 +38,16 @@ import androidx.compose.ui.platform.LocalContext
 import java.util.Calendar
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import androidx.compose.foundation.isSystemInDarkTheme
+import com.example.moodit.ui.theme.MooditTheme
+import com.example.moodit.ui.theme.SharedLocationHolder
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun InputScreen(navController: NavController) {
+
+    val isDark = isSystemInDarkTheme()
+    println("DARK MODE = $isDark")
 
     val context = LocalContext.current
     val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
@@ -133,7 +139,7 @@ fun InputScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF7F4FA))
+            .background(MaterialTheme.colorScheme.background)
     ) {
 
         Column(
@@ -159,7 +165,8 @@ fun InputScreen(navController: NavController) {
 
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = null
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onBackground
                     )
                 }
 
@@ -171,7 +178,8 @@ fun InputScreen(navController: NavController) {
                     Text(
                         text = "소비 기록하기",
                         fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                 }
 
@@ -184,7 +192,8 @@ fun InputScreen(navController: NavController) {
             Text(
                 text = "소비 카테고리",
                 fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -203,15 +212,15 @@ fun InputScreen(navController: NavController) {
                             }
                             .background(
                                 color = if (selectedCategory == category) {
-                                    Color(0xFFD7BEFF)
+                                    MaterialTheme.colorScheme.primaryContainer
                                 } else {
-                                    Color.White
+                                    MaterialTheme.colorScheme.surface
                                 },
                                 shape = RoundedCornerShape(14.dp)
                             )
                             .border(
                                 width = 1.dp,
-                                color = Color(0xFFC8AFFF),
+                                color = MaterialTheme.colorScheme.outline,
                                 shape = RoundedCornerShape(14.dp)
                             )
                             .padding(
@@ -223,7 +232,12 @@ fun InputScreen(navController: NavController) {
                         Text(
                             text = category,
                             fontSize = 14.sp,
-                            fontWeight = FontWeight.Medium
+                            fontWeight = FontWeight.Medium,
+                            color = if (selectedCategory == category) {
+                                MaterialTheme.colorScheme.onPrimaryContainer
+                            } else {
+                                MaterialTheme.colorScheme.onSurface
+                            }
                         )
                     }
                 }
@@ -235,7 +249,8 @@ fun InputScreen(navController: NavController) {
             Text(
                 text = "소비 금액",
                 fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -255,15 +270,15 @@ fun InputScreen(navController: NavController) {
                             }
                             .background(
                                 color = if (selectedAmount == amount) {
-                                    Color(0xFFD7BEFF)
+                                    MaterialTheme.colorScheme.primaryContainer
                                 } else {
-                                    Color.White
+                                    MaterialTheme.colorScheme.surface
                                 },
                                 shape = RoundedCornerShape(14.dp)
                             )
                             .border(
                                 width = 1.dp,
-                                color = Color(0xFFC8AFFF),
+                                color = MaterialTheme.colorScheme.outline,
                                 shape = RoundedCornerShape(14.dp)
                             )
                             .padding(vertical = 14.dp),
@@ -274,7 +289,12 @@ fun InputScreen(navController: NavController) {
                         Text(
                             text = amount,
                             fontSize = 13.sp,
-                            fontWeight = FontWeight.Medium
+                            fontWeight = FontWeight.Medium,
+                            color = if (selectedAmount == amount) {
+                                MaterialTheme.colorScheme.onPrimaryContainer
+                            } else {
+                                MaterialTheme.colorScheme.onSurface
+                            }
                         )
                     }
                 }
@@ -286,7 +306,8 @@ fun InputScreen(navController: NavController) {
             Text(
                 text = "소비 이유",
                 fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -314,15 +335,15 @@ fun InputScreen(navController: NavController) {
                             }
                             .background(
                                 color = if (selectedReason == reason) {
-                                    Color(0xFFD7BEFF)
+                                    MaterialTheme.colorScheme.primaryContainer
                                 } else {
-                                    Color.White
+                                    MaterialTheme.colorScheme.surface
                                 },
                                 shape = RoundedCornerShape(16.dp)
                             )
                             .border(
                                 width = 1.dp,
-                                color = Color(0xFFC8AFFF),
+                                color = MaterialTheme.colorScheme.outline,
                                 shape = RoundedCornerShape(16.dp)
                             )
                             .padding(12.dp)
@@ -346,7 +367,12 @@ fun InputScreen(navController: NavController) {
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 lineHeight = 20.sp,
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Center,
+                                color = if (selectedReason == reason) {
+                                    MaterialTheme.colorScheme.onPrimaryContainer
+                                } else {
+                                    MaterialTheme.colorScheme.onSurface
+                                }
                             )
                         }
                     }
@@ -359,7 +385,8 @@ fun InputScreen(navController: NavController) {
             Text(
                 text = "오늘 소비 기분 한마디 (선택)",
                 fontSize = 14.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             Spacer(modifier = Modifier.height(14.dp))
@@ -377,15 +404,20 @@ fun InputScreen(navController: NavController) {
 
                 placeholder = {
                     Text(
-                        text = "메모를 입력해주세요 (선택)"
+                        text = "메모를 입력해주세요 (선택)",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 },
 
                 shape = RoundedCornerShape(16.dp),
 
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color(0xFFC8AFFF),
-                    unfocusedBorderColor = Color(0xFFC8AFFF)
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    focusedBorderColor = MaterialTheme.colorScheme.outline,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface
                 ),
 
                 trailingIcon = {
@@ -394,7 +426,7 @@ fun InputScreen(navController: NavController) {
                     ) {
                         Text(
                             text = "${memo.length}/100",
-                            color = Color.Gray,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 13.sp
                         )
                     }
@@ -455,7 +487,8 @@ fun InputScreen(navController: NavController) {
             shape = RoundedCornerShape(18.dp),
 
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFC8AFFF)
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
             )
         ) {
 
@@ -468,6 +501,7 @@ fun InputScreen(navController: NavController) {
         }
     }
 }
+
 
 private fun checkAndSendNotifications(
     context: Context,
@@ -551,27 +585,134 @@ private fun checkLocationAndSendFeedback(
     ) == PackageManager.PERMISSION_GRANTED
 
     if (!hasFineLocation && !hasCoarseLocation) {
+        com.example.moodit.ui.theme.SharedLocationHolder.location = "위치 정보를 불러올 수 없습니다."
         onComplete()
         return
     }
 
     try {
-        fusedLocationClient.lastLocation
+
+        val cancellationTokenSource =
+            com.google.android.gms.tasks.CancellationTokenSource()
+
+        fusedLocationClient.getCurrentLocation(
+            com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY,
+            cancellationTokenSource.token
+        )
             .addOnSuccessListener { location ->
+
                 if (location != null) {
+
+                    println("LAT = ${location.latitude}")
+                    println("LON = ${location.longitude}")
+
                     val feedback = "외출 중 소비가 발생했어요."
-                    Toast.makeText(context, feedback, Toast.LENGTH_SHORT).show()
+
+                    Toast.makeText(
+                        context,
+                        feedback,
+                        Toast.LENGTH_SHORT
+                    ).show()
 
                     val notificationManager =
-                        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                    sendNotification(context, notificationManager, 1004, feedback)
+                        context.getSystemService(
+                            Context.NOTIFICATION_SERVICE
+                        ) as NotificationManager
+
+                    sendNotification(
+                        context,
+                        notificationManager,
+                        1004,
+                        feedback
+                    )
+
+                    val address =
+                        getAddressFromLocation(
+                            context,
+                            location.latitude,
+                            location.longitude
+                        )
+                    println("ADDRESS = $address")
+
+                    SharedLocationHolder.location = address
+
+                    com.example.moodit.ui.theme.SharedLocationHolder.location =
+                        address
+
+                } else {
+
+                    com.example.moodit.ui.theme.SharedLocationHolder.location =
+                        "위치 정보를 불러올 수 없습니다."
                 }
+
                 onComplete()
             }
             .addOnFailureListener {
+
+                com.example.moodit.ui.theme.SharedLocationHolder.location =
+                    "위치 정보를 불러올 수 없습니다."
+
                 onComplete()
             }
+
     } catch (e: SecurityException) {
+
+        com.example.moodit.ui.theme.SharedLocationHolder.location =
+            "위치 정보를 불러올 수 없습니다."
+
         onComplete()
+    }
+}
+
+private fun getAddressFromLocation(
+    context: Context,
+    latitude: Double,
+    longitude: Double
+): String {
+
+    return try {
+
+        val geocoder =
+            android.location.Geocoder(
+                context,
+                java.util.Locale.KOREAN
+            )
+
+        val addresses =
+            geocoder.getFromLocation(
+                latitude,
+                longitude,
+                1
+            )
+
+        if (!addresses.isNullOrEmpty()) {
+
+            val address = addresses[0]
+
+            val adminArea =
+                address.adminArea ?: ""
+
+            val locality =
+                address.locality ?: ""
+
+            val subLocality =
+                address.subLocality ?: ""
+
+            listOf(
+                adminArea,
+                locality,
+                subLocality
+            )
+                .filter { it.isNotBlank() }
+                .joinToString(" ")
+
+        } else {
+
+            "위치 정보를 불러올 수 없습니다."
+        }
+
+    } catch (e: Exception) {
+
+        "위치 정보를 불러올 수 없습니다."
     }
 }

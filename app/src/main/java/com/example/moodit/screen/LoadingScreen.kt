@@ -27,6 +27,8 @@ import com.example.moodit.R
 import kotlinx.coroutines.delay
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
+import androidx.compose.material3.MaterialTheme
+import com.example.moodit.ui.theme.MooditTheme
 
 @Composable
 fun LoadingScreen(
@@ -36,6 +38,7 @@ fun LoadingScreen(
     reason: String,
     memo: String
 ) {
+    MooditTheme {
 
     // 캐릭터 애니메이션
     val infiniteTransition = rememberInfiniteTransition(
@@ -103,7 +106,7 @@ fun LoadingScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF7F4FA)),
+            .background(MaterialTheme.colorScheme.background),
 
         verticalArrangement = Arrangement.Center,
 
@@ -131,13 +134,14 @@ fun LoadingScreen(
 
             fontWeight = FontWeight.Bold,
 
-            color = Color(0xFF6E54B5)
+            color = if (androidx.compose.foundation.isSystemInDarkTheme()) Color(0xFFC8AFFF) else Color(0xFF6E54B5)
         )
 
         Spacer(modifier = Modifier.height(18.dp))
 
         CircularProgressIndicator(
-            color = Color(0xFFC8AFFF)
+            color = MaterialTheme.colorScheme.primary
         )
     }
+}
 }
