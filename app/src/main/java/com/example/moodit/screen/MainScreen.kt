@@ -7,8 +7,15 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -279,7 +286,12 @@ fun MainScreen(navController: NavController) {
                         )
 
                         OutlinedButton(
-                            onClick = { }
+                            onClick = { },
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                containerColor = Color(0xFFEDE2FF),
+                                contentColor = Color(0xFF8E5DFF)
+                            ),
+                            border = BorderStroke(1.dp, Color(0xFFB388FF))
                         ) {
 
                             Text("쇼핑")
@@ -303,7 +315,12 @@ fun MainScreen(navController: NavController) {
                         )
 
                         OutlinedButton(
-                            onClick = { }
+                            onClick = { },
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                containerColor = Color(0xFFEDE2FF),
+                                contentColor = Color(0xFF8E5DFF)
+                            ),
+                            border = BorderStroke(1.dp, Color(0xFFB388FF))
                         ) {
 
                             Text("1~5만원")
@@ -327,7 +344,12 @@ fun MainScreen(navController: NavController) {
                         )
 
                         OutlinedButton(
-                            onClick = { }
+                            onClick = { },
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                containerColor = Color(0xFFEDE2FF),
+                                contentColor = Color(0xFF8E5DFF)
+                            ),
+                            border = BorderStroke(1.dp, Color(0xFFB388FF))
                         ) {
 
                             Text("자기만족")
@@ -342,14 +364,26 @@ fun MainScreen(navController: NavController) {
         }
 
         // 하단 고정 버튼
+        val interactionSource = remember { MutableInteractionSource() }
+        val isPressed by interactionSource.collectIsPressedAsState()
+        val scale by animateFloatAsState(
+            targetValue = if (isPressed) 0.96f else 1f,
+            label = "scale"
+        )
+        val baseColor = Color(0xFFC8AFFF)
+        val buttonColor = if (isPressed) lerp(baseColor, Color.Black, 0.15f) else baseColor
+
         Button(
             onClick = {
 
                 navController.navigate("input")
             },
 
+            interactionSource = interactionSource,
+
             modifier = Modifier
                 .fillMaxWidth()
+                .graphicsLayer(scaleX = scale, scaleY = scale)
                 .padding(
                     horizontal = 20.dp,
                     vertical = 16.dp
@@ -359,7 +393,7 @@ fun MainScreen(navController: NavController) {
             shape = RoundedCornerShape(18.dp),
 
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFC8AFFF)
+                containerColor = buttonColor
             )
         ) {
 

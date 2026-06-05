@@ -11,8 +11,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -437,6 +442,15 @@ fun InputScreen(navController: NavController) {
         }
 
         // 하단 버튼
+        val interactionSource = remember { MutableInteractionSource() }
+        val isPressed by interactionSource.collectIsPressedAsState()
+        val scale by animateFloatAsState(
+            targetValue = if (isPressed) 0.96f else 1f,
+            label = "scale"
+        )
+        val baseColor = MaterialTheme.colorScheme.primary
+        val buttonColor = if (isPressed) lerp(baseColor, Color.Black, 0.15f) else baseColor
+
         Button(
             onClick = {
 
@@ -476,8 +490,11 @@ fun InputScreen(navController: NavController) {
                 }
             },
 
+            interactionSource = interactionSource,
+
             modifier = Modifier
                 .fillMaxWidth()
+                .graphicsLayer(scaleX = scale, scaleY = scale)
                 .padding(
                     horizontal = 20.dp,
                     vertical = 16.dp
@@ -487,7 +504,7 @@ fun InputScreen(navController: NavController) {
             shape = RoundedCornerShape(18.dp),
 
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
+                containerColor = buttonColor,
                 contentColor = MaterialTheme.colorScheme.onPrimary
             )
         ) {
