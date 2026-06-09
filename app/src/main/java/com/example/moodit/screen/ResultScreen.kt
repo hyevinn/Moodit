@@ -19,6 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.ui.platform.LocalContext
+import com.example.moodit.data.DataStoreManager
 import com.example.moodit.ui.theme.MooditTheme
 import com.example.moodit.ui.theme.SharedLocationHolder
 import com.example.moodit.BuildConfig
@@ -146,6 +148,19 @@ fun ResultScreen(
 
             cardColor = if (isDark) Color(0xFF6FA27A) else Color(0xFFEFFAF3)
         }
+    }
+
+    val context = LocalContext.current
+    val dataStoreManager = remember { DataStoreManager(context) }
+
+    LaunchedEffect(decodedCategory, decodedAmount, decodedReason, resultType, description) {
+        dataStoreManager.saveRecentAnalysis(
+            resultType = resultType,
+            description = description,
+            category = decodedCategory,
+            amount = decodedAmount,
+            reason = decodedReason
+        )
     }
 
     LaunchedEffect(Unit) {

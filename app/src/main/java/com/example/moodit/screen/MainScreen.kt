@@ -24,11 +24,27 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.collectAsState
+import com.example.moodit.data.DataStoreManager
+import com.example.moodit.data.DEFAULT_ANALYSIS
 import androidx.navigation.NavController
 import com.example.moodit.R
 
 @Composable
 fun MainScreen(navController: NavController) {
+
+    val context = LocalContext.current
+    val dataStoreManager = remember { DataStoreManager(context) }
+    val recentAnalysisState by dataStoreManager.recentAnalysisFlow.collectAsState(initial = null)
+    val recentAnalysis = recentAnalysisState ?: DEFAULT_ANALYSIS
+
+    val emoji = when (recentAnalysis.reason) {
+        "자기만족" -> "🎁"
+        "스트레스 해소" -> "💨"
+        "유행 영향" -> "✨"
+        else -> "✔"
+    }
 
     Column(
         modifier = Modifier
@@ -198,7 +214,7 @@ fun MainScreen(navController: NavController) {
                     ) {
 
                         Text(
-                            text = "🎁",
+                            text = emoji,
 
                             modifier = Modifier.padding(16.dp),
 
@@ -219,7 +235,7 @@ fun MainScreen(navController: NavController) {
                         Spacer(modifier = Modifier.height(4.dp))
 
                         Text(
-                            text = "자기보상형 소비",
+                            text = recentAnalysis.resultType,
 
                             fontSize = 24.sp,
 
@@ -229,7 +245,7 @@ fun MainScreen(navController: NavController) {
                         Spacer(modifier = Modifier.height(6.dp))
 
                         Text(
-                            text = "만족감과 동기부여를 중요하게\n생각하는 소비 성향이에요.",
+                            text = recentAnalysis.description,
 
                             fontSize = 14.sp,
 
@@ -294,7 +310,7 @@ fun MainScreen(navController: NavController) {
                             border = BorderStroke(1.dp, Color(0xFFB388FF))
                         ) {
 
-                            Text("쇼핑")
+                            Text(recentAnalysis.category)
                         }
                     }
 
@@ -323,7 +339,7 @@ fun MainScreen(navController: NavController) {
                             border = BorderStroke(1.dp, Color(0xFFB388FF))
                         ) {
 
-                            Text("1~5만원")
+                            Text(recentAnalysis.amount)
                         }
                     }
 
@@ -352,7 +368,7 @@ fun MainScreen(navController: NavController) {
                             border = BorderStroke(1.dp, Color(0xFFB388FF))
                         ) {
 
-                            Text("자기만족")
+                            Text(recentAnalysis.reason)
                         }
                     }
 

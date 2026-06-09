@@ -70,4 +70,6 @@ dependencies {
 
     implementation("org.json:json:20240303")
 
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+
 }
