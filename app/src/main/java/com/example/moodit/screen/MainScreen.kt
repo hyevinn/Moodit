@@ -30,6 +30,8 @@ import com.example.moodit.data.DataStoreManager
 import com.example.moodit.data.DEFAULT_ANALYSIS
 import androidx.navigation.NavController
 import com.example.moodit.R
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.foundation.shape.CircleShape
 
 @Composable
 fun MainScreen(navController: NavController) {
@@ -38,6 +40,13 @@ fun MainScreen(navController: NavController) {
     val dataStoreManager = remember { DataStoreManager(context) }
     val recentAnalysisState by dataStoreManager.recentAnalysisFlow.collectAsState(initial = null)
     val recentAnalysis = recentAnalysisState ?: DEFAULT_ANALYSIS
+    val insightState by dataStoreManager.insightFlow.collectAsState(initial = null)
+    val insight = insightState ?: "오늘의 소비에는 오늘의 감정이 담겨 있어요."
+    val displayInsight = if (insight.startsWith("\"") && insight.endsWith("\"")) {
+        insight
+    } else {
+        "\"$insight\""
+    }
 
     val emoji = when (recentAnalysis.reason) {
         "자기만족" -> "🎁"
@@ -107,15 +116,16 @@ fun MainScreen(navController: NavController) {
 
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(140.dp)
+                    .heightIn(min = 140.dp)
             ) {
 
                 Row(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .fillMaxWidth()
+                        .height(IntrinsicSize.Max)
                         .padding(22.dp),
 
-                    verticalAlignment = Alignment.Top
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
 
                     Column(
@@ -125,42 +135,48 @@ fun MainScreen(navController: NavController) {
                     ) {
 
                         Text(
-                            text = "오늘의 한 줄",
+                            text = "✨ 최근 소비 인사이트",
                             color = Color.Black,
-                            fontSize = 15.sp
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
                         )
 
                         Spacer(modifier = Modifier.height(18.dp))
 
                         Text(
-                            text = "\"오늘의 소비에는\n오늘의 감정이 담겨 있어요.\"",
+                            text = displayInsight,
 
-                            fontSize = 17.sp,
+                            fontSize = 15.sp,
 
                             lineHeight = 24.sp,
 
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.Normal,
 
-                            color = Color.Black
+                            color = Color.Black,
+
                         )
                     }
 
                     Spacer(modifier = Modifier.width(10.dp))
 
-                    // 캐릭터 이미지
-                    Image(
-                        painter = painterResource(
-                            id = R.drawable.today_character
-                        ),
+                    // 캐릭터 이미지 Box 래퍼 (카드 높이에 따라 유연하게 중앙 정렬)
+                    Box(
+                        modifier = Modifier.fillMaxHeight(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = painterResource(
+                                id = R.drawable.today_character
+                            ),
 
-                        contentDescription = null,
+                            contentDescription = null,
 
-                        modifier = Modifier
-                            .size(90.dp)
-                            .offset(y = 6.dp),
+                            modifier = Modifier
+                                .size(90.dp),
 
-                        contentScale = ContentScale.Fit
-                    )
+                            contentScale = ContentScale.Fit
+                        )
+                    }
                 }
             }
 
@@ -201,27 +217,23 @@ fun MainScreen(navController: NavController) {
                 ) {
 
                     Card(
-                        shape = RoundedCornerShape(50.dp),
-
-                        border = BorderStroke(
-                            1.dp,
-                            Color(0xFFD6BEFF)
-                        ),
-
+                        modifier = Modifier.size(84.dp),   // 크기 고정
+                        shape = RoundedCornerShape(50),
+                        border = BorderStroke(1.dp, Color(0xFFD6BEFF)),
                         colors = CardDefaults.cardColors(
                             containerColor = Color.White
                         )
                     ) {
-
-                        Text(
-                            text = emoji,
-
-                            modifier = Modifier.padding(16.dp),
-
-                            fontSize = 34.sp
-                        )
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = emoji,
+                                fontSize = 34.sp
+                            )
+                        }
                     }
-
                     Spacer(modifier = Modifier.width(16.dp))
 
                     Column {

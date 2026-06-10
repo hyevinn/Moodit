@@ -35,6 +35,7 @@ class DataStoreManager(private val context: Context) {
         val KEY_CATEGORY = stringPreferencesKey("category")
         val KEY_AMOUNT = stringPreferencesKey("amount")
         val KEY_REASON = stringPreferencesKey("reason")
+        val KEY_INSIGHT = stringPreferencesKey("insight")
     }
 
     val recentAnalysisFlow: Flow<RecentAnalysis?> = context.dataStore.data.map { preferences ->
@@ -51,6 +52,10 @@ class DataStoreManager(private val context: Context) {
         }
     }
 
+    val insightFlow: Flow<String?> = context.dataStore.data.map { preferences ->
+        preferences[KEY_INSIGHT]
+    }
+
     suspend fun saveRecentAnalysis(
         resultType: String,
         description: String,
@@ -64,6 +69,12 @@ class DataStoreManager(private val context: Context) {
             preferences[KEY_CATEGORY] = category
             preferences[KEY_AMOUNT] = amount
             preferences[KEY_REASON] = reason
+        }
+    }
+
+    suspend fun saveInsight(insight: String) {
+        context.dataStore.edit { preferences ->
+            preferences[KEY_INSIGHT] = insight
         }
     }
 }

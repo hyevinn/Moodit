@@ -110,7 +110,7 @@ fun ResultScreen(
 
             keywords = listOf(
                 "#감정소비",
-                "#스트레스해소",
+                "#소확행",
                 "#기분전환"
             )
 
@@ -177,7 +177,9 @@ fun ResultScreen(
             소비 이유: $decodedReason
             메모: $decodedMemo
 
-            반드시 한국어로만 답변하세요.
+            반드시 자연스럽게 읽히는 한국어로만 답변하세요.
+            한자와 일본어는 사용을 절대 금지하며, 필요한 고유명사 외에는 영어 사용도 금지합니다.
+            특히 [소비 유형]은 반드시 '필요형 소비자', '자기보상형 소비자'와 같은 한국어 명사 형태로만 생성해야 하며, '必要 소비자'처럼 한자가 포함되어서는 절대 안 됩니다.
 
             관광, 음식, 여행 등 입력되지 않은 내용을 절대 추측하지 마세요.
 
@@ -259,12 +261,19 @@ fun ResultScreen(
             val result =
                 JSONObject(body!!)
 
-            aiReport =
+            val rawReport =
                 result
                     .getJSONArray("choices")
                     .getJSONObject(0)
                     .getJSONObject("message")
                     .getString("content")
+
+            aiReport = rawReport
+
+            val insight = extractInsight(rawReport)
+            if (insight.isNotEmpty()) {
+                dataStoreManager.saveInsight(insight)
+            }
 
         } catch (e: Exception) {
 
@@ -607,4 +616,62 @@ fun ResultScreen(
         Spacer(modifier = Modifier.height(24.dp))
     }
 }
+}
+
+fun cleanAndSummarize(text: String): String {
+    val trimmed = text.trim()
+    if (trimmed.isEmpty()) return ""
+    
+    val sentences = trimmed.split(Regex("(?<=[.!?])\\s+")).filter { it.isNotBlank() }
+    if (sentences.isEmpty()) return trimmed
+    
+    val firstSentence = sentences.first()
+    if (trimmed.length > 60 && firstSentence.length < trimmed.length) {
+        return firstSentence
+    }
+    
+    return trimmed
+}
+
+fun extractInsight(report: String): String {
+    val lines = report.lines().map { it.trim() }.filter { it.isNotEmpty() }
+    
+    var rawInsight = ""
+    
+    val adviceIndex = lines.indexOfFirst { it.contains("조언") }
+    if (adviceIndex != -1) {
+        if (adviceIndex + 1 < lines.size) {
+            val candidate = lines[adviceIndex + 1]
+            if (!candidate.startsWith("[")) {
+                rawInsight = candidate
+            }
+        }
+        if (rawInsight.isEmpty()) {
+            val afterBrackets = lines[adviceIndex].substringAfter("]").trim()
+            if (afterBrackets.isNotEmpty()) {
+                rawInsight = afterBrackets
+            }
+        }
+    }
+    
+    if (rawInsight.isEmpty()) {
+        val analysisIndex = lines.indexOfFirst { it.contains("분석") }
+        if (analysisIndex != -1) {
+            if (analysisIndex + 1 < lines.size) {
+                val candidate = lines[analysisIndex + 1]
+                if (!candidate.startsWith("[")) {
+                    rawInsight = candidate
+                }
+            }
+        }
+    }
+    
+    if (rawInsight.isEmpty()) {
+        val cleanLines = lines.filter { !it.contains("[") && !it.contains("]") }
+        if (cleanLines.isNotEmpty()) {
+            rawInsight = cleanLines.last()
+        }
+    }
+    
+    return cleanAndSummarize(rawInsight)
 }
