@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="Theme.Moodit.Main" parent="android:Theme.Material.Light.NoActionBar" />
-
     <style name="Theme.Moodit" parent="Theme.SplashScreen">
         <item name="windowSplashScreenAnimatedIcon">@drawable/today_character_splash</item>
         <item name="windowSplashScreenBackground">@android:color/white</item>

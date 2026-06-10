@@ -25,123 +25,85 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.moodit.R
 import kotlinx.coroutines.delay
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 import androidx.compose.material3.MaterialTheme
 import com.example.moodit.ui.theme.MooditTheme
 
 @Composable
 fun LoadingScreen(
-    navController: NavController,
-    category: String,
-    amount: String,
-    reason: String,
-    memo: String
+    navController: NavController
 ) {
     MooditTheme {
 
-    // 캐릭터 애니메이션
-    val infiniteTransition = rememberInfiniteTransition(
-        label = "character_animation"
-    )
+        // 캐릭터 애니메이션
+        val infiniteTransition = rememberInfiniteTransition(
+            label = "character_animation"
+        )
 
-    val scale by infiniteTransition.animateFloat(
-        initialValue = 0.95f,
-        targetValue = 1.05f,
+        val scale by infiniteTransition.animateFloat(
+            initialValue = 0.95f,
+            targetValue = 1.05f,
 
-        animationSpec = infiniteRepeatable(
-            animation = tween(
-                durationMillis = 900,
-                easing = FastOutSlowInEasing
+            animationSpec = infiniteRepeatable(
+                animation = tween(
+                    durationMillis = 900,
+                    easing = FastOutSlowInEasing
+                ),
+
+                repeatMode = RepeatMode.Reverse
             ),
 
-            repeatMode = RepeatMode.Reverse
-        ),
-
-        label = "character_scale"
-    )
-
-    LaunchedEffect(Unit) {
-
-        // route 안전 처리
-        val encodedCategory = URLEncoder.encode(
-            category,
-            StandardCharsets.UTF_8.toString()
+            label = "character_scale"
         )
 
-        val encodedAmount = URLEncoder.encode(
-            amount,
-            StandardCharsets.UTF_8.toString()
-        )
+        LaunchedEffect(Unit) {
+            delay(2500)
 
-        val encodedReason = URLEncoder.encode(
-            reason,
-            StandardCharsets.UTF_8.toString()
-        )
-
-        val encodedMemo =
-            if (memo.isBlank()) {
-                "empty"
-            } else {
-                URLEncoder.encode(
-                    memo,
-                    StandardCharsets.UTF_8.toString()
-                )
-            }
-
-        delay(2500)
-
-        navController.navigate(
-            "result/$encodedCategory/$encodedAmount/$encodedReason/$encodedMemo"
-        ) {
-
-            popUpTo(
-                "loading/{category}/{amount}/{reason}/{memo}"
-            ) {
-                inclusive = true
+            navController.navigate("result") {
+                popUpTo("loading") {
+                    inclusive = true
+                }
             }
         }
-    }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-
-        verticalArrangement = Arrangement.Center,
-
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        Image(
-            painter = painterResource(
-                id = R.drawable.today_character
-            ),
-
-            contentDescription = null,
-
+        Column(
             modifier = Modifier
-                .size(130.dp)
-                .scale(scale)
-        )
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
 
-        Spacer(modifier = Modifier.height(28.dp))
+            verticalArrangement = Arrangement.Center,
 
-        Text(
-            text = "AI가 소비 패턴을 분석중이에요...",
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
-            fontSize = 20.sp,
+            Image(
+                painter = painterResource(
+                    id = R.drawable.today_character
+                ),
 
-            fontWeight = FontWeight.Bold,
+                contentDescription = null,
 
-            color = if (androidx.compose.foundation.isSystemInDarkTheme()) Color(0xFFC8AFFF) else Color(0xFF6E54B5)
-        )
+                modifier = Modifier
+                    .size(130.dp)
+                    .scale(scale)
+            )
 
-        Spacer(modifier = Modifier.height(18.dp))
+            Spacer(modifier = Modifier.height(28.dp))
 
-        CircularProgressIndicator(
-            color = MaterialTheme.colorScheme.primary
-        )
+            Text(
+                text = "AI가 소비 패턴을 분석중이에요...",
+
+                fontSize = 20.sp,
+
+                fontWeight = FontWeight.Bold,
+
+                color = if (androidx.compose.foundation.isSystemInDarkTheme()) Color(0xFFC8AFFF) else Color(0xFF6E54B5)
+            )
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            CircularProgressIndicator(
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
     }
-}
 }

@@ -93,13 +93,26 @@ fun MainScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(6.dp))
 
-            Text(
-                text = "오늘도 현명한 소비 습관을 만들어봐요",
-                fontSize = 15.sp,
-                color = Color.Gray
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "오늘도 현명한 소비 습관을 만들어봐요",
+                    fontSize = 15.sp,
+                    color = Color.Gray
+                )
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Image(
+                    painter = painterResource(id = R.drawable.today_character),
+                    contentDescription = null,
+                    modifier = Modifier.size(65.dp),
+                    contentScale = ContentScale.Fit
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
 
             // 오늘의 한 줄 카드
             Card(
@@ -119,64 +132,28 @@ fun MainScreen(navController: NavController) {
                     .heightIn(min = 140.dp)
             ) {
 
-                Row(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(IntrinsicSize.Max)
-                        .padding(22.dp),
-
-                    verticalAlignment = Alignment.CenterVertically
+                        .padding(22.dp)
                 ) {
 
-                    Column(
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(end = 8.dp)
-                    ) {
+                    Text(
+                        text = "✨ 최근 소비 인사이트",
+                        color = Color.Black,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    )
 
-                        Text(
-                            text = "✨ 최근 소비 인사이트",
-                            color = Color.Black,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+                    Spacer(modifier = Modifier.height(18.dp))
 
-                        Spacer(modifier = Modifier.height(18.dp))
-
-                        Text(
-                            text = displayInsight,
-
-                            fontSize = 15.sp,
-
-                            lineHeight = 24.sp,
-
-                            fontWeight = FontWeight.Normal,
-
-                            color = Color.Black,
-
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.width(10.dp))
-
-                    // 캐릭터 이미지 Box 래퍼 (카드 높이에 따라 유연하게 중앙 정렬)
-                    Box(
-                        modifier = Modifier.fillMaxHeight(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Image(
-                            painter = painterResource(
-                                id = R.drawable.today_character
-                            ),
-
-                            contentDescription = null,
-
-                            modifier = Modifier
-                                .size(90.dp),
-
-                            contentScale = ContentScale.Fit
-                        )
-                    }
+                    Text(
+                        text = displayInsight,
+                        fontSize = 15.sp,
+                        lineHeight = 24.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = Color.Black
+                    )
                 }
             }
 

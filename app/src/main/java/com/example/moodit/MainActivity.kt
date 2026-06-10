@@ -3,6 +3,7 @@ package com.example.moodit
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -16,6 +17,8 @@ import com.example.moodit.ui.theme.MooditTheme
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        installSplashScreen()
 
         super.onCreate(savedInstanceState)
 
@@ -42,48 +45,13 @@ class MainActivity : ComponentActivity() {
                 }
 
                 // 로딩 화면
-                composable(
-                    "loading/{category}/{amount}/{reason}/{memo}"
-                ) {
-
-                    LoadingScreen(
-                        navController = navController,
-
-                        category =
-                            it.arguments?.getString("category") ?: "",
-
-                        amount =
-                            it.arguments?.getString("amount") ?: "",
-
-                        reason =
-                            it.arguments?.getString("reason") ?: "",
-
-                        memo =
-                            it.arguments?.getString("memo") ?: ""
-                    )
+                composable("loading") {
+                    LoadingScreen(navController = navController)
                 }
 
                 // 결과 화면
-                composable(
-                    "result/{category}/{amount}/{reason}/{memo}"
-                ) {
-
-                    ResultScreen(
-
-                        navController = navController,
-
-                        category =
-                            it.arguments?.getString("category") ?: "",
-
-                        amount =
-                            it.arguments?.getString("amount") ?: "",
-
-                        reason =
-                            it.arguments?.getString("reason") ?: "",
-
-                        memo =
-                            it.arguments?.getString("memo") ?: ""
-                    )
+                composable("result") {
+                    ResultScreen(navController = navController)
                 }
             }
         }
