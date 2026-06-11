@@ -32,6 +32,7 @@ import androidx.navigation.NavController
 import com.example.moodit.R
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.text.PlatformTextStyle
 
 @Composable
 fun MainScreen(navController: NavController) {
@@ -88,10 +89,15 @@ fun MainScreen(navController: NavController) {
                 text = "안녕하세요 👋",
                 fontSize = 25.sp,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onBackground,
+                style = LocalTextStyle.current.copy(
+                    platformStyle = PlatformTextStyle(
+                        includeFontPadding = false
+                    )
+                )
             )
 
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(2.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -107,7 +113,9 @@ fun MainScreen(navController: NavController) {
                 Image(
                     painter = painterResource(id = R.drawable.today_character),
                     contentDescription = null,
-                    modifier = Modifier.size(65.dp),
+                    modifier = Modifier
+                        .size(65.dp)
+                        .offset(y = (-4).dp),
                     contentScale = ContentScale.Fit
                 )
             }

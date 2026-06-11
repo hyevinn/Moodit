@@ -47,10 +47,14 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import com.example.moodit.ui.theme.MooditTheme
 import com.example.moodit.ui.theme.SharedLocationHolder
 import com.example.moodit.model.SharedConsumptionHolder
 import com.example.moodit.model.ConsumptionData
+import java.text.DecimalFormat
+
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -106,12 +110,15 @@ fun InputScreen(navController: NavController) {
 
     var selectedCategory by remember { mutableStateOf("식비") }
     var rawAmount by remember { mutableStateOf("") }
+    var amountFieldValue by remember {
+        mutableStateOf(TextFieldValue(""))
+    }
     var selectedReason by remember { mutableStateOf("필요 소비") }
     var memo by remember { mutableStateOf("") }
     var editingItemId by remember { mutableStateOf<Long?>(null) }
 
     val categories = listOf("식비", "카페", "교통", "쇼핑", "취미", "자기계발", "기타")
-    val reasons = listOf("필요 소비", "자기만족", "스트레스 해소", "유행 영향")
+    val reasons = listOf("필요 소비", "자기만족", "기분전환", "유행 영향")
 
     val totalAmount = SharedConsumptionHolder.list.sumOf { it.amount.toLongOrNull() ?: 0L }
     val totalAmountFormatted = java.text.DecimalFormat("#,###").format(totalAmount)
@@ -206,11 +213,41 @@ fun InputScreen(navController: NavController) {
             )
             Spacer(modifier = Modifier.height(12.dp))
             OutlinedTextField(
-                value = if (rawAmount.isEmpty()) "" else java.text.DecimalFormat("#,###").format(rawAmount.toLongOrNull() ?: 0L),
-                onValueChange = { input ->
-                    val digits = input.filter { it.isDigit() }
-                    if (digits.length <= 9) { // 최대 999,999,999원 제한
+                value = amountFieldValue,
+
+                onValueChange = { value ->
+                    val digits = value.text.filter { it.isDigit() }
+
+                    if (digits.length <= 9) {
                         rawAmount = digits
+
+                        val formatted =
+                            if (digits.isEmpty()) ""
+                            else java.text.DecimalFormat("#,###")
+                                .format(digits.toLong())
+
+                        val oldCursor = value.selection.start
+
+                        val commasBefore =
+                            value.text.take(oldCursor).count { it == ',' }
+
+                        val newCursor =
+                            (oldCursor - commasBefore)
+                                .coerceIn(0, digits.length)
+
+                        val formattedCursor =
+                            DecimalFormat("#,###")
+                                .format(
+                                    digits.take(newCursor)
+                                        .ifEmpty { "0" }
+                                        .toLong()
+                                )
+                                .length
+
+                        amountFieldValue = TextFieldValue(
+                            text = formatted,
+                            selection = TextRange(formattedCursor)
+                        )
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
@@ -260,7 +297,7 @@ fun InputScreen(navController: NavController) {
                     val isSelected = selectedReason == reason
                     val emoji = when (reason) {
                         "자기만족" -> "🙂"
-                        "스트레스 해소" -> "💨"
+                        "기분전환" -> "💨"
                         "유행 영향" -> "✨"
                         else -> "✔"
                     }
@@ -385,6 +422,7 @@ fun InputScreen(navController: NavController) {
 
                     // 입력 필드 초기화
                     rawAmount = ""
+                    amountFieldValue= TextFieldValue("")
                     memo = ""
                     selectedCategory = "식비"
                     selectedReason = "필요 소비"
@@ -487,7 +525,7 @@ fun InputScreen(navController: NavController) {
                         Spacer(modifier = Modifier.height(8.dp))
                         val reasonEmoji = when (item.reason) {
                             "자기만족" -> "🙂"
-                            "스트레스 해소" -> "💨"
+                            "기분전환" -> "💨"
                             "유행 영향" -> "✨"
                             else -> "✔"
                         }

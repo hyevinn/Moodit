@@ -5,7 +5,7 @@
 
     <style name="Theme.Moodit" parent="Theme.SplashScreen">
         <item name="windowSplashScreenAnimatedIcon">@drawable/today_character_splash</item>
-        <item name="windowSplashScreenBackground">@android:color/white</item>
+        <item name="windowSplashScreenBackground">@color/splash_bg</item>
         <item name="postSplashScreenTheme">@style/Theme.Moodit.Main</item>
     </style>
 </resources>
