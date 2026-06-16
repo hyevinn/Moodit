@@ -155,9 +155,7 @@ fun ResultScreen(
                 소비 빈도 (총 건수): ${consumptionList.size}건
 
                 반드시 자연스럽게 읽히는 한국어로만 답변하세요.
-                한자와 일본어는 사용을 절대 금지하며, 필요한 고유명사 외에는 영어 사용도 금지합니다.
-                특히 [소비 유형]은 반드시 '필요형 소비자', '자기보상형 소비자'와 같은 한국어 명사 형태로만 생성해야 하며, '必要 소비자'처럼 한자가 포함되어서는 절대 안 됩니다.
-                [AI 분석] 문장에 한자, 일본어, 영어 사용 절대 금지합니다.
+                모든 화면에서는 한자, 일본어 사용 금지입니다.
                 
                 관광, 음식, 여행 등 입력되지 않은 내용을 절대 추측하지 마세요.
 
@@ -264,10 +262,17 @@ fun ResultScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-                .verticalScroll(rememberScrollState())
-                .padding(20.dp)
+                .statusBarsPadding()
         ) {
-            Spacer(modifier = Modifier.height(18.dp))
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 20.dp)
+            ) {
+                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(18.dp))
 
             // 상단 바
             Row(
@@ -576,7 +581,8 @@ fun ResultScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(20.dp))
+            }
 
             val returnInteractionSource = remember { MutableInteractionSource() }
             val isReturnPressed by returnInteractionSource.collectIsPressedAsState()
@@ -600,6 +606,8 @@ fun ResultScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .graphicsLayer(scaleX = returnScale, scaleY = returnScale)
+                    .navigationBarsPadding()
+                    .padding(horizontal = 20.dp, vertical = 16.dp)
                     .height(60.dp),
                 shape = RoundedCornerShape(18.dp),
                 colors = ButtonDefaults.buttonColors(
@@ -614,8 +622,6 @@ fun ResultScreen(
                     color = Color.White
                 )
             }
-
-            Spacer(modifier = Modifier.height(30.dp))
         }
     }
 }

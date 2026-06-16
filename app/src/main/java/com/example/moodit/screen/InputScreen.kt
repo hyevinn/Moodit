@@ -117,20 +117,35 @@ fun InputScreen(navController: NavController) {
     var memo by remember { mutableStateOf("") }
     var editingItemId by remember { mutableStateOf<Long?>(null) }
 
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.96f else 1f,
+        label = "scale"
+    )
+    val baseColor = MaterialTheme.colorScheme.primary
+    val buttonColor = if (isPressed) lerp(baseColor, Color.Black, 0.15f) else baseColor
+
     val categories = listOf("식비", "카페", "교통", "쇼핑", "취미", "자기계발", "기타")
     val reasons = listOf("필요 소비", "자기만족", "기분전환", "유행 영향")
 
     val totalAmount = SharedConsumptionHolder.list.sumOf { it.amount.toLongOrNull() ?: 0L }
     val totalAmountFormatted = java.text.DecimalFormat("#,###").format(totalAmount)
 
-    LazyColumn(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(horizontal = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .statusBarsPadding()
     ) {
-        // 상단 네비게이션 및 타이틀
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            // 상단 네비게이션 및 타이틀
         item {
             Spacer(modifier = Modifier.height(18.dp))
             Row(
@@ -586,7 +601,7 @@ fun InputScreen(navController: NavController) {
             }
         }
 
-        // 총 소비 금액 및 소비 분석하기 버튼
+        // 총 소비 금액 표시
         item {
             Spacer(modifier = Modifier.height(8.dp))
             Row(
@@ -607,51 +622,45 @@ fun InputScreen(navController: NavController) {
                     color = MaterialTheme.colorScheme.primary
                 )
             }
-            Spacer(modifier = Modifier.height(20.dp))
-
-            val interactionSource = remember { MutableInteractionSource() }
-            val isPressed by interactionSource.collectIsPressedAsState()
-            val scale by animateFloatAsState(
-                targetValue = if (isPressed) 0.96f else 1f,
-                label = "scale"
-            )
-            val baseColor = MaterialTheme.colorScheme.primary
-            val buttonColor = if (isPressed) lerp(baseColor, Color.Black, 0.15f) else baseColor
-
-            Button(
-                onClick = {
-                    if (SharedConsumptionHolder.list.isEmpty()) {
-                        Toast.makeText(context, "소비 내역을 최소 1건 이상 저장해주세요.", Toast.LENGTH_SHORT).show()
-                        return@Button
-                    }
-
-                    checkAndSendNotifications(context, SharedConsumptionHolder.list)
-
-                    checkLocationAndSendFeedback(context, fusedLocationClient) {
-                        navController.navigate("loading")
-                    }
-                },
-                interactionSource = interactionSource,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .graphicsLayer(scaleX = scale, scaleY = scale)
-                    .height(60.dp),
-                shape = RoundedCornerShape(18.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = buttonColor,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                )
-            ) {
-                Text(
-                    text = "소비 분석하기",
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-            }
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
+
+    // 소비 분석하기 버튼 (화면 하단 고정)
+    Button(
+        onClick = {
+            if (SharedConsumptionHolder.list.isEmpty()) {
+                Toast.makeText(context, "소비 내역을 최소 1건 이상 저장해주세요.", Toast.LENGTH_SHORT).show()
+                return@Button
+            }
+
+            checkAndSendNotifications(context, SharedConsumptionHolder.list)
+
+            checkLocationAndSendFeedback(context, fusedLocationClient) {
+                navController.navigate("loading")
+            }
+        },
+        interactionSource = interactionSource,
+        modifier = Modifier
+            .fillMaxWidth()
+            .graphicsLayer(scaleX = scale, scaleY = scale)
+            .navigationBarsPadding()
+            .padding(horizontal = 20.dp, vertical = 16.dp)
+            .height(60.dp),
+        shape = RoundedCornerShape(18.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = buttonColor,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        )
+    ) {
+        Text(
+            text = "소비 분석하기",
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.White
+        )
+    }
+}
 }
 
 private fun checkAndSendNotifications(

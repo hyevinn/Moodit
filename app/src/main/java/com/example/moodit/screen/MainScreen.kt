@@ -60,6 +60,7 @@ fun MainScreen(navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            .statusBarsPadding()
     ) {
 
         // 스크롤 영역
@@ -313,7 +314,7 @@ fun MainScreen(navController: NavController) {
 
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    // 금액대
+                    // 금액
                     Row(
                         modifier = Modifier.fillMaxWidth(),
 
@@ -323,7 +324,7 @@ fun MainScreen(navController: NavController) {
                     ) {
 
                         Text(
-                            text = "💰  금액대",
+                            text = "💰  금액",
                             fontSize = 17.sp
                         )
 
@@ -397,6 +398,7 @@ fun MainScreen(navController: NavController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .graphicsLayer(scaleX = scale, scaleY = scale)
+                .navigationBarsPadding()
                 .padding(
                     horizontal = 20.dp,
                     vertical = 16.dp

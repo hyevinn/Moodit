@@ -18,11 +18,14 @@ import com.example.moodit.screen.ResultScreen
 import com.example.moodit.screen.SplashScreen
 import com.example.moodit.ui.theme.MooditTheme
 
+import androidx.activity.enableEdgeToEdge
+
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         installSplashScreen()
+        enableEdgeToEdge()
 
         super.onCreate(savedInstanceState)
 
